@@ -9,6 +9,7 @@
 #include <assert.h>
 using namespace std;
 
+
 struct TreeNode {
 	int val;
 	TreeNode *left, *right;
@@ -33,34 +34,43 @@ struct TreeNode {
  */
 class Solution {
 public:
-	/*
-	The minimum depth is the number of nodes along the shortest path from 
-	the root node down to the nearest leaf node.
-	*/
-	int minDepth(TreeNode* root) {
+	vector<vector<int> > levelOrder(TreeNode* root) {
+		vector<vector<int> > ans;
 		if (root == NULL)
-			return 0;
-
-		// 1e9 is an assuming upper bound of the depth of the tree, not safe
-		int ans = 1e9;
-		if (root->left != NULL)
-			ans = min(ans, minDepth(root->left) + 1);
-		if (root->right != NULL)
-			ans = min(ans, minDepth(root->right) + 1);
-
-		if (ans != 1e9)
 			return ans;
-		// if the node is a leaf node
-		return 1;
+
+		queue<pair<TreeNode*, int> > q;
+		q.push(make_pair(root, 0));
+
+		while (!q.empty()) {
+			int index = q.front().second;
+			TreeNode* now = q.front().first;
+			q.pop();
+			if (now->left != NULL)
+				q.push(make_pair(now->left, index+1));
+			if (now->right != NULL)
+				q.push(make_pair(now->right, index+1));
+
+			while (ans.size() <= index)
+				ans.push_back(vector<int>());
+			ans[index].push_back(now->val);
+		}
+
+		/*for (int i = 0; i < ans.size(); ++i) {
+			for (int j = 0; j < ans[i].size(); ++j)
+				printf("%d ", ans[i][j]);
+			printf("\n");
+		}*/
+
+		return ans;
 	}
 };
+
 
 int main() {
 	Solution s;
 	
 	TreeNode* root = new TreeNode(100);
-	assert(s.minDepth(root) == 1);
-
 	TreeNode*left = new TreeNode(233);
 	TreeNode*right = new TreeNode(666);
 	TreeNode* left_left_child = new TreeNode(555);
@@ -69,7 +79,7 @@ int main() {
 	root->setRight(right);
 	left->setLeft(left_left_child);
 
-	assert(s.minDepth(root) == 2);
+	s.levelOrder(root);
 
 	return 0;
 }
