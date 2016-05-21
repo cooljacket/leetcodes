@@ -1,5 +1,3 @@
-// https://leetcode.com/problems/unique-binary-search-trees-ii/
-
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -11,7 +9,21 @@
  */
 class Solution {
 public:
-    vector<TreeNode*> generateTrees(int n) {
-        for (int i = )
-    }
+	vector<TreeNode*> collections;
+	int size;
+
+	void helper(TreeNode* root, int num) {
+		if (num > size) {
+			collections.push_back(root);
+		}
+	}
+
+	vector<TreeNode*> generateTrees(int n) {
+		size = n;
+		for (int i = 1; i <= n; ++i) {
+			TreeNode* root = new TreeNode(i);
+			helper(root, 1);
+		}
+		return collections;
+	}
 };

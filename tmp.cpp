@@ -2,34 +2,67 @@
 #include <iostream>
 #include <vector>
 #include <stdio.h>
+#include <algorithm>
+#include <stack>
 using namespace std;
 
 class Solution {
 public:
-	int numSquares(int n) {
-		const int INF = 1e9;
-		vector<int> dp(n+1, INF);
-		int end = 1;
-		while (end*end < n)
-			++end;
+	int maxProfit(int k, vector<int>& prices) {
+		if (prices.empty() || prices.size() == 1)
+			return 0;
+		//k = min(k, (int)prices.size());
+		return helper(prices, k);
+	}
 
-		dp[0] = 0;
-		for (int i = 1; i <= end; ++i) {
-			int base = i*i;
-			for (int j = n; j >= 1; --j)
-				if (j >= base) {
-					dp[j] = min(dp[j], dp[j-base]+1);
-					printf("i=%d, j=%d, dp=%d\n", i, j, dp[j]);
-				}
+	int helper(vector<int>& prices, int k) {
+		int n = prices.size(), largest = 0, key = 1;
+		vector<vector<int> > global(2, vector<int>(k+1)), local(global);
+		for (int i = 1; i < n; ++i) {
+			int diff = prices[i] - prices[i-1];
+			for (int j = 1; j <= k; ++j) {
+				local[key][j] = max(global[key-1][j-1]+max(diff, 0), local[key-1][j]+diff);
+				global[key][j] = max(global[key-1][j], local[i][j]);
+				largest = max(largest, global[i][j]);
+			}
+			key = 1 - key;
 		}
-		return dp[n];
+		return largest;
 	}
 };
 
 int main() {
+	int n;
+	cin >> n;
+	vector<int> v(n);
+	for (int i = 0; i < n; ++i)
+		cin >> v[i];
 	Solution s;
-	cout << s.numSquares(2) << endl;
-	// cout << s.numSquares(12) << endl;
-	// cout << s.numSquares(13) << endl;
+	cout << s.maxProfit(n, v) << endl;
+
+	/*string s1;
+	while (cin >> s1) {
+		Solution s;
+		cout << s.minDistance(s1) << endl;
+	}*/
+
+	/*string s1, s2;
+	while (cin >> s1 >> s2) {
+		Solution s;
+		cout << s.isScramble(s1, s2) << endl;
+	}*/
+
+	/*
+	string s1, s2, s3;
+	while (cin >> s1 >> s2 >> s3) {
+		Solution s;
+		cout << s.isInterleave(s1, s2, s3) << endl;
+	}*/
+	
 	return 0;
 }
+
+/*
+2
+1 2 4
+*/
