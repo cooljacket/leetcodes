@@ -1,4 +1,11 @@
-// https://leetcode.com/problems/climbing-stairs/
+#include <stdio.h>
+#include <vector>
+#include <string>
+#include <map>
+#include <set>
+#include <assert.h>
+using namespace std;
+
 class Solution {
 public:
 	int climbStairs(int n) {
@@ -12,3 +19,14 @@ public:
 		return dp[n];
 	}
 };
+
+
+int main() {
+	Solution s;
+
+	assert(s.climbStairs(1) == 1);
+	assert(s.climbStairs(2) == 2);
+	assert(s.climbStairs(4) == 5);
+
+	return 0;
+}
