@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include <vector>
 #include <string>
 #include <map>
@@ -17,15 +18,26 @@ class Solution {
 public:
 	// need in-place and O(1) space to solve
 	void reverseWords(string& s) {
-		// first, you should get enough space to reverse each word
-		// but notice that each word is exactly equal to itself in size!!!!!!
-		// this is the most important property to solve this problem in O(1) space
-		if (s.empty() || s == " ") {
-			s = "";
-			return;
+		// 首先要处理多余的空格，将其缩减为一个
+		int last_nws = -2, len = s.size();
+		for (int i = 0; i < len; ++i) {
+			if (s[i] != ' ') {
+				if (i - last_nws > 2) {
+					while (i < len && s[i] != ' ')
+						swap(s[(++last_nws)+1], s[i++]);
+					++last_nws;
+				} else
+					last_nws = i;
+			}
 		}
+		if (last_nws == -2)
+			last_nws = -1;
+		s = s.substr(0, last_nws+1);
+		if (s.empty())
+			return;
 
-		int start = -1, len = s.size();
+		int start = -1;
+		len = s.size();
 		reverseHelper(s, 0, len-1);
 
 		for (int i = 0; i < len; ++i) {
@@ -36,7 +48,6 @@ public:
 				if (i == len-1 && s[i] != ' ')
 					tail = i;
 				reverseHelper(s, start, tail);
-				// printf("i=%d, s=%s, start=%d, tail=%d\n", i, s.data(), start, tail);
 				start = -1;
 			}
 		}
@@ -52,10 +63,29 @@ public:
 int main() {
 	Solution s;
 
-	string str("hello jacket");
-	printf("Original str=%s\n", str.data());
-	s.reverseWords(str);
-	printf("After reversing, str=%s\n", str.data());
+	string str1("ab         c   d  ");
+	s.reverseWords(str1);
+	cout << str1 << endl << endl;;
+
+	string str2(" ab  c   d ");
+	s.reverseWords(str2);
+	cout << str2 << endl << endl;;
+
+	string str3(" ab  c   d");
+	s.reverseWords(str3);
+	cout << str3 << endl << endl;;
+
+	string str4("ab c   d");
+	s.reverseWords(str4);
+	cout << str4 << endl << endl;;
+
+	string str5(" ");
+	s.reverseWords(str5);
+	cout << str5 << "xxxx" << endl << endl;;
+
+	string str6("  the     sky    is blue  ");
+	s.reverseWords(str6);
+	cout << str6 << endl << endl;;
 
 	return 0;
 }
